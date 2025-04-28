@@ -11,6 +11,8 @@ export default class PipelineConstruct extends Construct {
     const account = props?.env?.account!;
     const region = props?.env?.region!;
 
+    this.prevalidateSecrets(region);
+
     const blueprint = blueprints.EksBlueprint.builder()
     .version(eks.KubernetesVersion.V1_31)
     .account(account)
@@ -21,10 +23,20 @@ export default class PipelineConstruct extends Construct {
       .owner("mikemcd3912")
       .stage({id: "mgmt", stackBuilder: blueprint.clone()})
       .repository({
-        repoUrl: '',
+        repoUrl: 'single-eks-cluster-cdk-pipeline',
         credentialsSecretName: 'github-token',
         targetRevision: 'main'
     })
       .build(scope, id+'-stack', props);
   }
+
+
+  async prevalidateSecrets(region: string) {
+    try {
+        await blueprints.utils.validateSecret('github-token', region);
+    }
+    catch(error) {
+        throw new Error(`github-token secret must be setup in AWS Secrets Manager for the GitHub pipeline.`);
+    }
+}
 }
