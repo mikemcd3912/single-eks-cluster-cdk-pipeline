@@ -21,6 +21,7 @@ export default class PipelineConstruct extends Construct {
     blueprints.CodePipelineStack.builder()
       .name("single-cluster-pipeline")
       .owner("mikemcd3912")
+      .codeBuildPolicies(blueprints.DEFAULT_BUILD_POLICIES)
       .stage({id: "mgmt", stackBuilder: blueprint.clone()})
       .repository({
         repoUrl: 'single-eks-cluster-cdk-pipeline',
