@@ -20,6 +20,11 @@ export default class PipelineConstruct extends Construct {
       .name("single-cluster-pipeline")
       .owner("mikemcd3912")
       .stage({id: "mgmt", stackBuilder: blueprint.clone()})
+      .repository({
+        repoUrl: '',
+        credentialsSecretName: 'github-token',
+        targetRevision: 'main'
+    })
       .build(scope, id+'-stack', props);
   }
 }
